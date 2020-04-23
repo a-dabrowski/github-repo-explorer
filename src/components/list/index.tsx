@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
+import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -22,6 +23,9 @@ import {
 
 const useStyles = makeStyles(() =>
   createStyles({
+    userBar: {
+      backgroundColor: '#EFEFEF'
+    },
     formParent: {
       padding: 16
     },
@@ -79,6 +83,7 @@ export function List() {
           {users.map(el => (
             <ExpansionPanel key={el.id}>
               <ExpansionPanelSummary
+                className={classes.userBar}
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls={`panel${el.id}-content`}
                 id={`panel${el.id}-header`}
@@ -86,8 +91,8 @@ export function List() {
                 <Typography>{el.login}</Typography>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
-                <div>
-                  {el.repositories ? (
+                <Grid container>
+                  {el.repositories.length > 0 ? (
                     el.repositories.map((el: any) => (
                       <RepoCard
                         key={el.name}
@@ -99,7 +104,7 @@ export function List() {
                   ) : (
                     <Typography variant="h6">No repositories</Typography>
                   )}
-                </div>
+                </Grid>
               </ExpansionPanelDetails>
             </ExpansionPanel>
           ))}

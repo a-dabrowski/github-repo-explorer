@@ -29,6 +29,7 @@ export const slice = createSlice({
       state.isResolved = false;
     },
     requestResolved: (state) => {
+      state.isLoading = false;
       state.isResolved = true;
     },
     requestFailed: (state) => {

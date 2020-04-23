@@ -13,7 +13,7 @@ interface iRepoCard {
 const useStyles = makeStyles(() =>
   createStyles({
     card: {
-      width: "auto",
+      width: "100%",
       margin: 16,
       marginLeft: 24,
       padding: 24,
@@ -44,12 +44,12 @@ export function RepoCard(props: iRepoCard) {
   const { name, starsCount, description } = props;
   return (
     <Grid container className={classes.card}>
-      <Grid item xs={10}>
+      <Grid item xs={12} sm={10}>
         <Typography className={classes.repoName} variant="h6">
           {name}
         </Typography>
       </Grid>
-      <Grid item xs={2}>
+      <Grid item xs={12} sm={2}>
         <Typography variant="h6">
           {starsCount}
         <StarIcon className={classes.starIcon} />
