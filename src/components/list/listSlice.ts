@@ -25,6 +25,8 @@ export const slice = createSlice({
     changeQuery: (state, action) => {
       console.log(action);
       state.query = action.payload;
+      state.isError = false;
+      state.isResolved = false;
     },
     requestResolved: (state) => {
       state.isResolved = true;
@@ -61,12 +63,10 @@ export default slice.reducer;
 
 export const searchForUsers = (query: string): AppThunk => async dispatch => {
   dispatch(waitForFetch());
-  const searchResult = await findUser(query);
-  console.log(searchResult);
+  const searchResult = await findUser(query).catch(() => {dispatch(requestFailed())});
   if (
-    searchResult.status < 400 &&
-    searchResult.data &&
-    searchResult.data.items
+    searchResult &&
+    searchResult.status < 400
   ) {
     const usersChunk = async () =>
       Promise.all(
@@ -87,7 +87,7 @@ export const searchForUsers = (query: string): AppThunk => async dispatch => {
       );
     usersChunk().then(resolve => {
       dispatch(setFoundUsers(resolve));
-    });
+    }).catch(() => dispatch(requestFailed()));
     dispatch(requestResolved());
   } else {
     dispatch(requestFailed())
