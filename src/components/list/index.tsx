@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { makeStyles, createStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -9,55 +10,101 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
+import { SearchStatus } from "./searchStatus";
+import { RepoCard } from "components/repoCard";
 
 import {
   changeQuery,
   searchForUsers,
-  selectIsResolved,
   selectSearchQuery,
   selectUsersFound
 } from "./listSlice";
 
+const useStyles = makeStyles(() =>
+  createStyles({
+    formParent: {
+      padding: 16
+    },
+    formElement: {
+      width: "100%",
+      marginBottom: 24
+    },
+    searchButton: {
+      width: "100%",
+      textTransform: "capitalize"
+    }
+  })
+);
+
 export function List() {
   const dispatch = useDispatch();
+  const classes = useStyles();
   const searchQuery = useSelector(selectSearchQuery);
-  const isSearchResolved = useSelector(selectIsResolved);
   const users = useSelector(selectUsersFound);
 
-  const handleQueryChange = (event: any) =>
+  const handleQueryChange = (event: any) => {
     dispatch(changeQuery(event.target.value));
+  };
+
+  const handleSubmit = (event: any) => {
+    !!searchQuery && dispatch(searchForUsers(searchQuery));
+    event.preventDefault();
+  };
 
   return (
-    <Paper>
-      <form>
+    <Paper className={classes.formParent}>
+      <form onSubmit={handleSubmit}>
         <TextField
+          className={classes.formElement}
+          label="Username"
           variant="filled"
           onChange={handleQueryChange}
+          value={searchQuery}
           placeholder="Enter username"
         />
-        <Button onClick={() => dispatch(searchForUsers(searchQuery))}>
+        <Button
+          className={classes.searchButton}
+          size="large"
+          variant="contained"
+          color="primary"
+          disabled={!searchQuery}
+          onClick={() => dispatch(searchForUsers(searchQuery))}
+        >
           Search
         </Button>
-        {isSearchResolved && <span>Showing users for "{searchQuery}"</span>}
-        {users && (
-          <div>
-            {users.map(el => (
-              <ExpansionPanel>
-                <ExpansionPanelSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                >
-                  <Typography>{el.login}</Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                  <Typography>{el.repos_url}</Typography>
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
-            ))}
-          </div>
-        )}
       </form>
+      <SearchStatus />
+      {users && (
+        <div>
+          {users.map(el => (
+            <ExpansionPanel key={el.id}>
+              <ExpansionPanelSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls={`panel${el.id}-content`}
+                id={`panel${el.id}-header`}
+              >
+                <Typography>{el.login}</Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
+                <div>
+                  {el.repositories ? (
+                    el.repositories.map((el: any) => (
+                      <RepoCard
+                        key={el.name}
+                        name={el.name}
+                        starsCount={el.starsCount}
+                        description={el.description}
+                      />
+                    ))
+                  ) : (
+                    <Typography variant="h6">No repositories</Typography>
+                  )}
+                </div>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          ))}
+        </div>
+      )}
     </Paper>
   );
 }
