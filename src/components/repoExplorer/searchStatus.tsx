@@ -8,7 +8,7 @@ import {
   selectIsLoading,
   selectIsResolved,
   selectSearchQuery
-} from "./listSlice";
+} from "./explorerSlice";
 
 const PROGRESS_SIZE = 60;
 

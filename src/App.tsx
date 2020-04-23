@@ -1,12 +1,12 @@
 import React from 'react';
 import Container from '@material-ui/core/Container';
-import { List } from './components/list';
+import { RepoExplorer } from './components/repoExplorer';
 
 function App() {
   return (
     <div className="App">
       <Container maxWidth="md">
-      <List />
+      <RepoExplorer />
     </Container>
     </div>
   );

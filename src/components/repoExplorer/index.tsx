@@ -19,7 +19,7 @@ import {
   searchForUsers,
   selectSearchQuery,
   selectUsersFound
-} from "./listSlice";
+} from "./explorerSlice";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -40,7 +40,7 @@ const useStyles = makeStyles(() =>
   })
 );
 
-export function List() {
+export function RepoExplorer() {
   const dispatch = useDispatch();
   const classes = useStyles();
   const searchQuery = useSelector(selectSearchQuery);
